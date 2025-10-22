@@ -1,65 +1,70 @@
-import Image from "next/image";
+"use client";
+import Pitch from "@/components/Pitch";
+import { auth } from "./firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Home() {
+  const [user, loading] = useAuthState(auth);
+
+  if (loading) return <p>Loading...</p>;
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[70vh] text-center">
+        <h1 className="text-2xl font-semibold mb-4">Team Selector</h1>
+        <p className="text-gray-600">
+          Please <span className="font-medium">sign in</span> or{" "}
+          <span className="font-medium">create an account</span> to use the team
+          selector.
+        </p>
+      </div>
+    );
+  }
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <div className="mb-2">
+        <h1 className="font-semibold text-xl mb-2">
+          Welcome to the Squad Selector{" "}
+        </h1>
+        <p>
+          Choose your team from the drop down on the right, choose your base
+          formation and get creative. Drag positions around to create new
+          formations and drag and drop the players into position to create your
+          preferred XI. Save your XI for future use and don't forget to
+          screenshot your favourite lineups to send your mates.{" "}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 p-6">
+        {/* Left side (Pitch) */}
+        <div className="flex flex-col items-center md:col-span-2">
+          <Pitch />
+          <div className="gap-4 grid grid-cols-3">
+          <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
+            Take Screenshot
+          </button>
+          <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
+            Save Lineup
+          </button>
+          <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
+            Load Lineup
+          </button>
+          </div>
+          
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="flex flex-col gap-4">
+        <div className="border rounded-md p-4 flex-1">Starting Formation</div>
         </div>
-      </main>
-    </div>
+
+        {/* Right side (team dropdown + players) */}
+        <div className="flex flex-col gap-4">
+          <select className="border rounded-md p-2">
+            <option>Select team</option>
+          </select>
+          <div className="border rounded-md p-4 flex-1">Player list here</div>
+        </div>
+      </div>
+    </>
   );
 }
