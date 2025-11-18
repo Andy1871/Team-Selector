@@ -15,10 +15,10 @@ A **Next.js football lineup creator** that allows users to select any team from 
 
 ## Features
 
-- **Drag-and-Drop Lineup Builder** — Build teams by dragging players directly onto preselect formations  
-- **Customise Formation** — Drag players on the pitch around to alter the formation
+- **Drag-and-Drop Lineup Builder** — build teams by dragging players directly onto preselect formations  
+- **Customise Formation** — drag players on the pitch around to alter the formation
 - **API Sports Integration** — fetch real team and squad data 
-- **Firebase Authentication** — Secure login - the ability to save and load lineups is WIP
+- **Firebase Authentication** — secure login - the ability to save and load lineups is WIP
 
 ---
 
