@@ -1,20 +1,20 @@
 "use client";
 
-import { signOut } from "firebase/auth";
+// import { signOut } from "firebase/auth";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { auth } from "../app/firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
+// import { usePathname, useRouter } from "next/navigation";
+// import { auth } from "../app/firebase";
+// import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Navbar() {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [user] = useAuthState(auth);
+  // const pathname = usePathname();
+  // const router = useRouter();
+  // const [user] = useAuthState(auth);
 
-  const handleSignOut = async () => {
-    await signOut(auth);
-    router.push("/sign-in");
-  };
+  // const handleSignOut = async () => {
+  //   await signOut(auth);
+  //   router.push("/sign-in");
+  // };
 
   return (
     <nav className="border-b bg-white/80 backdrop-blur sticky top-0 z-50">
@@ -22,7 +22,7 @@ export default function Navbar() {
         <Link href="/" className="font-semibold text-lg">
           Squad Selector
         </Link>
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           {user ? (
             <button className="hover:text-yellow-600" onClick={handleSignOut}>
               Sign Out
@@ -44,7 +44,7 @@ export default function Navbar() {
               )}
             </>
           )}
-        </div>
+        </div> */}
       </div>
     </nav>
   );

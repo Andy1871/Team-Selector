@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase";
+// import { useAuthState } from "react-firebase-hooks/auth";
+// import { auth } from "./firebase";
 
 import { FormationGeometryProvider } from "@/providers/FormationGeometryProvider";
 import { AssignmentProvider } from "@/providers/AssignmentProvider";
@@ -69,20 +69,20 @@ function SquadCanvas() {
 }
 
 export default function Home() {
-  const [user, loading] = useAuthState(auth);
+  // const [user, loading] = useAuthState(auth);
 
-  if (loading) return <p>Loading...</p>;
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[70vh] text-center">
-        <h1 className="text-2xl font-semibold mb-4">Team Selector</h1>
-        <p className="text-gray-600">
-          Please <span className="font-medium">sign in</span> or{" "}
-          <span className="font-medium">create an account</span> to use the team selector.
-        </p>
-      </div>
-    );
-  }
+  // if (loading) return <p>Loading...</p>;
+  // if (!user) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-[70vh] text-center">
+  //       <h1 className="text-2xl font-semibold mb-4">Team Selector</h1>
+  //       <p className="text-gray-600">
+  //         Please <span className="font-medium">sign in</span> or{" "}
+  //         <span className="font-medium">create an account</span> to use the team selector.
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <SquadProvider>
