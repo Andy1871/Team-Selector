@@ -36,7 +36,7 @@ function SquadCanvas() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6">
         <div className="flex flex-col items-center md:col-span-2">
           <Pitch activeId={activeId} />
-          <div className="gap-4 grid grid-cols-3">
+          {/* <div className="gap-4 grid grid-cols-3">
             <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
               Share
             </button>
@@ -46,7 +46,7 @@ function SquadCanvas() {
             <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
               Load Lineup
             </button>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col">
@@ -93,6 +93,9 @@ export default function Home() {
             <p>
               Choose your team, pick a base formation and get creative. Drag positions around to
               create new formations and drag and drop players into position…
+              <br />
+              <br />
+              To remove a player from the lineup, drag them back into the squad on the right hand side.
             </p>
           </div>
           <SquadCanvas />
