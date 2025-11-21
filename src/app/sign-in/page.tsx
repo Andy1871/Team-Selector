@@ -13,10 +13,13 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, loading] = useAuthState(auth);
+  const [submitting, setSubmitting] = useState(false)
 
   const onSubmit = async () => {
+    setSubmitting(true)
     await signInUserWithEmailAndPassword(email, password);
     router.push("/");
+    setSubmitting(false)
   };
 
   useEffect(() => {
@@ -52,7 +55,7 @@ export default function Page() {
         className="bg-yellow-500 text-black px-4 py-2 rounded-md font-bold"
         onClick={onSubmit}
       >
-        SIGN IN
+        {submitting ? "SIGNING IN..." : "SIGN IN"}
       </button>
     </div>
   );
