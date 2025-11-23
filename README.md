@@ -1,4 +1,4 @@
-# Football Lineup Creator (WIP)
+# Football Lineup Creator
 
 An interactive **Next.js lineup builder** that lets users pick an English football team, view their squad, and build tactical formations using **drag-and-drop**. Players can be dragged from a squad list onto formation dots on the pitch, swapped around, or removed back to the list.
 
