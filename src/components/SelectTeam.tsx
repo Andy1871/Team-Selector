@@ -1,4 +1,3 @@
-// components/SelectTeam.tsx
 "use client";
 import { useSquad } from "@/providers/SquadProvider";
 import { PL_TEAMS, CH_TEAMS, TEAM_NAME_BY_ID } from "@/lib/teams";

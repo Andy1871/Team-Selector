@@ -16,15 +16,9 @@ type Player = {
 type ApiSquadResp = { response?: Array<{ players?: Player[] }> };
 type Buckets = { GK: Player[]; DEF: Player[]; MID: Player[]; FWD: Player[] };
 
-const getGroup = (pos?: string | null): keyof Buckets => {
-  const p = (pos ?? "").toLowerCase();
-  if (p.includes("keeper") || p === "gk" || p === "goalkeeper") return "GK";
-  if (p.includes("def") || p === "df" || p === "defender") return "DEF";
-  if (p.includes("mid") || p === "mf" || p === "midfielder") return "MID";
-  return "FWD";
-};
 
 // Draggable row
+
 function PlayerRow({ p }: { p: Player }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `player:${p.id}`,
@@ -75,7 +69,7 @@ function BucketSection({
 }
 
 export default function PlayerList() {
-  const { selectedTeamId, selectedTeamName, setPlayersById } = useSquad();
+  const { selectedTeamId, selectedTeamName, setPlayersById, getBucket } = useSquad();
   const { assignments } = useAssignments();
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(false);
@@ -142,9 +136,10 @@ export default function PlayerList() {
     );
   }
 
+  //group players into their position groups using getBucket function
   const grouped = players.reduce<Buckets>(
     (acc, p) => {
-      acc[getGroup(p.position)].push(p);
+      acc[getBucket(p.position)].push(p);
       return acc;
     },
     { GK: [], DEF: [], MID: [], FWD: [] }
@@ -158,7 +153,7 @@ export default function PlayerList() {
   grouped.MID.sort(sortFn);
   grouped.FWD.sort(sortFn);
 
-  // Remove players already assigned to *any* dot
+  // Remove players already assigned to a dot
   const assignedIds = new Set(Object.values(assignments).filter(Boolean) as number[]);
   const filtered = {
     GK: grouped.GK.filter((p) => !assignedIds.has(p.id)),

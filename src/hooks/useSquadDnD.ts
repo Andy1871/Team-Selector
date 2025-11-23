@@ -1,9 +1,8 @@
-// hooks/useSquadDnD.ts
 "use client";
 import { DragEndEvent } from "@dnd-kit/core";
 import { useAssignments } from "@/providers/AssignmentProvider";
 import { useFormationGeometry } from "@/providers/FormationGeometryProvider";
-import { useSquad } from "@/providers/SquadProvider";
+// import { useSquad } from "@/providers/SquadProvider";
 
 const CELL_RE = /^(\d+)-(\d+)$/;
 const BUCKET_RE = /^bucket:(GK|DEF|MID|FWD)$/;
@@ -11,7 +10,7 @@ const BUCKET_RE = /^bucket:(GK|DEF|MID|FWD)$/;
 export function useSquadDnD() {
   const { dotIdByCell, setPositions } = useFormationGeometry();
   const { assignments, setAssignments } = useAssignments();
-  const { /* getBucket, playersById */ } = useSquad(); // available if you want later
+  // const { /* getBucket, playersById */ } = useSquad(); 
 
   const onDragCancelGlobal = () => {};
 
@@ -99,13 +98,13 @@ export function useSquadDnD() {
 
       if (destIdx === -1) {
         // move into empty cell
-        next[fromIdx] = { ...next[fromIdx], row: destRow, col: destCol };
+        next[fromIdx] = { ...next[fromIdx], row: destRow, col: destCol }; // prev formation array with 'from Id'
       } else {
         // swap with the dot currently in the destination cell
         const fromPos = next[fromIdx];
         const destPos = next[destIdx];
-        next[fromIdx] = { ...fromPos, row: destPos.row, col: destPos.col };
-        next[destIdx] = { ...destPos, row: fromRow, col: fromCol };
+        next[fromIdx] = { ...fromPos, row: destPos.row, col: destPos.col }; // prev formation array with 'from Id'
+        next[destIdx] = { ...destPos, row: fromRow, col: fromCol }; // prev formation array with 'destination Id'
       }
 
       return next;

@@ -10,7 +10,7 @@ import React, {
 type Assignments = Record<string /*dotId*/, number /*playerId*/ | null>;
 type Ctx = {
   assignments: Assignments;
-  setAssignments: Dispatch<SetStateAction<Assignments>>;
+  setAssignments: Dispatch<SetStateAction<Assignments>>; // allows assignments to update via func or new value of type Assignments
   dotForPlayer: (pid: number | null) => string | null;
 };
 
@@ -23,10 +23,12 @@ export function AssignmentProvider({
 }) {
   const [assignments, setAssignments] = useState<Assignments>({});
 
-  const dotForPlayer = (pid: number | null) =>
-    pid == null
-      ? null
-      : Object.entries(assignments).find(([, v]) => v === pid)?.[0] ?? null;
+  // finding the dotId a certain playerId is assigned to by scanning all assignments
+  function dotForPlayer(pid: number | null) {
+    if (pid === null) return null;
+    const entry = Object.entries(assignments).find(([, playerId]) => playerId === pid);
+    return entry ? entry[0] : null;
+  }
 
   return (
     <AssignmentContext.Provider

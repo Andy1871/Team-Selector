@@ -62,6 +62,7 @@ export const FORMATIONS: Record<FormationKey, Coord[]> = {
 
 export const GRID = { cols: 5, rows: 6 }; 
 
+// provides each array index with its own row, col position and id
 export const ALL_DOTS: Coord[] = Array.from(
     { length: GRID.rows * GRID.cols },
     (_, i) => {

@@ -50,7 +50,7 @@ function DraggableDot({
   );
 }
 
-// created here, as no smaller components
+
 function DroppableCell({
   id,
   children,
@@ -73,15 +73,16 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
 
   const dragging = Boolean(activeId);
 
-  // For render only
+  // For render only - turn positions into Map (positions is array of coords of current formation)
   const byCell = useMemo(() => {
     const m = new Map<CellId, { id: string; row: number; col: number }>();
     for (const p of positions) m.set(cellId(p.row, p.col), { id: p.id, row: p.row, col: p.col });
     return m;
   }, [positions]);
 
-  // group columns by row to offset when 4 on a row
-  const rowCols = useMemo(() => {
+  // next two are layouts tweak when 4 on a row - just aesthetic
+  //rowCols just find Map of columns by row (4-4-2 may be [1, 2, 4, 5])
+  const rowCols = useMemo(() => { // useMemo to only compute on positions change
     const m = new Map<number, number[]>();
     for (const p of positions) {
       const list = m.get(p.row) ?? [];
@@ -91,6 +92,7 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
     return m;
   }, [positions]);
 
+  // used to check number inside the rowCols map, if 4 fix layout slightly
   const xClasses = (row: number, col: number) => {
     const colsInRow = rowCols.get(row) ?? [];
     const isFour = colsInRow.length === 4;

@@ -1,5 +1,4 @@
-// lib/teams.ts
-export type Team = { id: number; name: string; logo?: string };
+export type Team = { id: number; name: string; };
 
 export const PL_TEAMS: Team[] = [
   { id: 42, name: "Arsenal" },

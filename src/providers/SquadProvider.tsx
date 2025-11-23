@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState } from "react";
 
+// allows passing around of player id to gain access to id, name, positon more easily
 export type PlayersById = Record<number, { id: number; name: string; position?: string | null }>;
 
 type Ctx = {
@@ -15,6 +16,7 @@ type Ctx = {
 
 const SquadContext = createContext<Ctx | null>(null);
 
+// store players by position in the UI much more cleanly.
 const getBucket = (pos?: string | null) => {
   const p = (pos ?? "").toLowerCase();
   if (p.includes("keeper") || p === "gk" || p === "goalkeeper") return "GK";
@@ -24,6 +26,7 @@ const getBucket = (pos?: string | null) => {
 };
 
 export function SquadProvider({ children }: { children: React.ReactNode }) {
+  // not actively doing anything with these, just establishing central global state accesible in each level of the app
   const [playersById, setPlayersByIdState] = useState<PlayersById>({});
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [selectedTeamName, setSelectedTeamName] = useState<string | null>(null);

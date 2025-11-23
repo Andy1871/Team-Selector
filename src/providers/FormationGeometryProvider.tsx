@@ -9,7 +9,6 @@ type Ctx = {
   positions: Coord[];
   setPositions: Dispatch<SetStateAction<Coord[]>>;
   setFormation: (key: FormationKey | null) => void;
-  /** derived: "row-col" -> dotId for active dots only */
   dotIdByCell: Record<string, string>;
 };
 
@@ -18,20 +17,24 @@ const FormationGeometryContext = createContext<Ctx | null>(null);
 export function FormationGeometryProvider({ children }: { children: React.ReactNode }) {
   const [selectedKey, setSelectedKey] = useState<FormationKey | null>(null);
 
+  // creating ALL possible coords for the grid - useMemo so doesn't keep rerendering
   const ALL_DOTS = useMemo<Coord[]>(() => {
     const out: Coord[] = [];
     for (let r = 1; r <= GRID.rows; r++) for (let c = 1; c <= GRID.cols; c++) out.push({ row: r, col: c, id: `${r}-${c}` });
     return out;
   }, []);
 
+  // if selectedKey exists, set to formations with the key, or set to All_DOTS to be displayed
   const basePositions = useMemo(() => (selectedKey ? FORMATIONS[selectedKey] : ALL_DOTS), [selectedKey, ALL_DOTS]);
   const [positions, setPositions] = useState<Coord[]>(ALL_DOTS);
 
+  // ...FORMATIONS prevents drag and drop from modifying the original formations objects.
   const setFormation = (key: FormationKey | null) => {
     setSelectedKey(key);
     setPositions(key ? [...FORMATIONS[key]] : ALL_DOTS);
   };
 
+  // map to help find position id from given row/col
   const dotIdByCell = useMemo(() => {
     const o: Record<string, string> = {};
     for (const p of positions) o[`${p.row}-${p.col}`] = p.id;

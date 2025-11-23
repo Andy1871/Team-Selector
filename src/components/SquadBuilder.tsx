@@ -17,7 +17,7 @@ export default function SquadBuilder() {
       sensors={sensors}
       onDragStart={({ active }) => setActiveId(String(active.id))}
       onDragEnd={(e) => {
-        setActiveId(null);           // ensure overlay + pitch ghost clear
+        setActiveId(null);           // ensure overlay and pitch ghost clear
         onDragEndGlobal(e);          // let shared logic handle the drop
       }}
       onDragCancel={() => {
