@@ -4,8 +4,7 @@ An interactive **Next.js lineup builder** that lets users pick an English footba
 
 Real squad data is fetched dynamically via the **API Sports Football API**, and advanced UI behaviour is powered by React state management using custom **context providers**.
 
-**Live demo:** [https://<your-vercel-url>.vercel.app
-](https://team-selector-six.vercel.app/)
+**Live demo:** [https://<your-vercel-url>.vercel.app](https://team-selector-six.vercel.app/) - no login needed
 ---
 
 ## Features
