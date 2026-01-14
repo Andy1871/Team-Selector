@@ -113,8 +113,8 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
     const isFour = colsInRow.length === 4;
     let cls = "left-1/2 -translate-x-1/2";
     if (isFour) {
-      if (col === 2) cls = "left-[60%]"; // push right in its cell
-      if (col === 4) cls = "left-[15%]"; // push left in its cell
+      if (col === 2) cls = "left-[60%] -translate-x-1/2"; // push right in its cell
+      if (col === 4) cls = "left-[15%] -translate-x-1/2"; // push left in its cell
     }
     return cls;
   };
