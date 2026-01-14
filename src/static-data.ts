@@ -1,23 +1,18 @@
 export const startingFormations = [
-    // {
-    //     title: '5 at the back',
-    //     formations: [
-    //         "5-3-2", "5-2-3", "5-4-1"
-    //     ]
-    // },
-    {
-        title: '4 at the back',
-        formations: [
-            "4-4-2", "4-3-3", "4-2-3-1"
-        ]
-    },
-    {
-        title: '3 at the back',
-        formations: [
-            "3-5-2",
-        ]
-    }
-]
+  {
+    title: "3 at the back",
+    formations: ["3-4-3", "3-5-2", "3-4-1-2"],
+  },
+  {
+    title: "4 at the back",
+    formations: ["4-3-3", "4-2-3-1", "4-4-2", "4-1-4-1", "4-3-1-2", "4-2-2-2"],
+  },
+  {
+    title: "5 at the back",
+    formations: ["5-3-2", "5-2-3", "5-4-1"],
+  },
+];
+
 
 export const teams = [
     {
