@@ -14,7 +14,6 @@ import PlayerList from "@/components/PlayerList";
 import StartingFormations from "@/components/StartingFormations";
 import SelectTeam from "@/components/SelectTeam";
 
-
 function SquadCanvas() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -33,8 +32,14 @@ function SquadCanvas() {
         onDragCancelGlobal();
       }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6">
-        <div className="flex flex-col items-center md:col-span-2">
+      {/* 
+        Layout goals:
+        - Small screens: Pitch full width, then formations + squad side-by-side
+        - Large screens: 4 columns (pitch spans 2), formations col 3, squad col 4
+      */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4 sm:p-6">
+        {/* Pitch */}
+        <div className="flex flex-col items-center lg:col-span-2">
           <Pitch activeId={activeId} />
           {/* <div className="gap-4 grid grid-cols-3">
             <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
@@ -49,19 +54,23 @@ function SquadCanvas() {
           </div> */}
         </div>
 
-        <div className="flex flex-col">
-          <StartingFormations />
-        </div>
+        {/* Right side: on small/medium screens keep these two NEXT TO EACH OTHER */}
+        <div className="grid grid-cols-2 gap-4 lg:col-span-2 lg:grid-cols-2">
+          <div className="flex flex-col">
+            <StartingFormations />
+          </div>
 
-        <div className="flex flex-col gap-2">
-          <SelectTeam />
-          <PlayerList />
+          <div className="flex flex-col gap-2">
+            <SelectTeam />
+            <PlayerList />
+          </div>
         </div>
       </div>
 
       <DragOverlay>
         {activeId ? (
-          <div className="w-5 h-5 rounded-full border-2 border-green-700 bg-gray-300 shadow" />
+          // ✅ bigger overlay dot to match pitch dot size
+          <div className="w-7 h-7 rounded-full border-2 border-green-700 bg-gray-300 shadow" />
         ) : null}
       </DragOverlay>
     </DndContext>

@@ -22,7 +22,7 @@ function DraggableDot({
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
-      id: `dot:${id}`, // ✅ prefix
+      id: `dot:${id}`, 
       data: { row, col },
     });
 
@@ -43,7 +43,7 @@ function DraggableDot({
     >
       <div
         className={[
-          "w-5 h-5 rounded-full border-2 border-green-700 bg-gray-300 shadow",
+          "w-7 h-7 rounded-full border-2 border-green-700 bg-gray-300 shadow",
           isDragging ? "opacity-70 scale-105" : "",
         ].join(" ")}
       />
@@ -58,7 +58,7 @@ function DroppableCell({
   id: CellId;
   children?: React.ReactNode;
 }) {
-  const { setNodeRef } = useDroppable({ id: `cell:${id}` }); // ✅ prefix
+  const { setNodeRef } = useDroppable({ id: `cell:${id}` }); 
   return (
     <div ref={setNodeRef} className="relative border-white/10">
       {children}
@@ -73,37 +73,48 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
 
   const dragging = Boolean(activeId);
 
-  const assignedCount = useMemo(() => {
-    return Object.values(assignments).filter((v) => v != null).length;
-  }, [assignments]);
+  const assignedCount = useMemo(
+    () => Object.values(assignments).filter((v) => v != null).length,
+    [assignments]
+  );
 
-  const isFreeMode = selectedKey == null; // ✅ no preset formation selected
+  const isFreeMode = selectedKey == null;
   const freeModeFull = isFreeMode && assignedCount >= 11;
 
-  // For render only: Map cells -> dot info
+  // Only count/render dots that are visible
+  const visiblePositions = useMemo(() => {
+    if (!freeModeFull) return positions;
+    // when full in free mode: only show dots that have a player
+    return positions.filter((p) => assignments[p.id] != null);
+  }, [positions, assignments, freeModeFull]);
+
+  // For render only: Map cells -> dot info (use visiblePositions)
   const byCell = useMemo(() => {
     const m = new Map<CellId, { id: string; row: number; col: number }>();
-    for (const p of positions) m.set(cellId(p.row, p.col), { id: p.id, row: p.row, col: p.col });
+    for (const p of visiblePositions)
+      m.set(cellId(p.row, p.col), { id: p.id, row: p.row, col: p.col });
     return m;
-  }, [positions]);
+  }, [visiblePositions]);
 
+  // rowCols must also be based on visible dots, otherwise 4-in-row won't trigger correctly
   const rowCols = useMemo(() => {
     const m = new Map<number, number[]>();
-    for (const p of positions) {
+    for (const p of visiblePositions) {
       const list = m.get(p.row) ?? [];
       list.push(p.col);
       m.set(p.row, list);
     }
     return m;
-  }, [positions]);
+  }, [visiblePositions]);
 
+  // 4-in-a-row spacing tweak
   const xClasses = (row: number, col: number) => {
     const colsInRow = rowCols.get(row) ?? [];
     const isFour = colsInRow.length === 4;
     let cls = "left-1/2 -translate-x-1/2";
     if (isFour) {
-      if (col === 2) cls = "left-[60%]";
-      if (col === 4) cls = "left-[15%]";
+      if (col === 2) cls = "left-[60%]"; // push right in its cell
+      if (col === 4) cls = "left-[15%]"; // push left in its cell
     }
     return cls;
   };
@@ -117,10 +128,6 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
           const id = cellId(row, col);
           const dot = byCell.get(id);
 
-          // ✅ in free mode when full: hide any dot that doesn't have a player
-          const dotHasPlayer = dot ? assignments[dot.id] != null : false;
-          const shouldRenderDot = dot && (!freeModeFull || dotHasPlayer);
-
           return (
             <DroppableCell key={id} id={id}>
               {/* ghost dots while dragging */}
@@ -129,23 +136,29 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                   aria-hidden
                 >
-                  <div className="w-5 h-5 rounded-full border-2 border-green-700/40 bg-gray-300/30" />
+                  <div className="w-7 h-7 rounded-full border-2 border-green-700/40 bg-gray-300/30" />
                 </div>
               )}
 
-              {shouldRenderDot && dot && (
+              {dot && (
                 <>
-                  <DraggableDot id={dot.id} row={row} col={col} className={xClasses(row, col)} />
+                  <DraggableDot
+                    id={dot.id}
+                    row={row}
+                    col={col}
+                    className={xClasses(row, col)}
+                  />
 
                   {assignments[dot.id] != null && (
                     <div
                       className={[
-                        "absolute top-1/2 -translate-y-[150%] w-full text-center text-xs font-medium",
+                        "absolute top-1/2 -translate-y-[165%] w-full text-center text-xs font-medium",
                         xClasses(row, col),
                       ].join(" ")}
                     >
                       <span className="px-1.5 py-0.5 rounded bg-white/80">
-                        {playersById[assignments[dot.id] as number]?.name ?? assignments[dot.id]}
+                        {playersById[assignments[dot.id] as number]?.name ??
+                          assignments[dot.id]}
                       </span>
                     </div>
                   )}
