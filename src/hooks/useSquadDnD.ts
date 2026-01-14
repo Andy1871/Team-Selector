@@ -2,15 +2,13 @@
 import { DragEndEvent } from "@dnd-kit/core";
 import { useAssignments } from "@/providers/AssignmentProvider";
 import { useFormationGeometry } from "@/providers/FormationGeometryProvider";
-// import { useSquad } from "@/providers/SquadProvider";
 
-const CELL_RE = /^(\d+)-(\d+)$/;
+const CELL_RE = /^cell:(\d+)-(\d+)$/;
 const BUCKET_RE = /^bucket:(GK|DEF|MID|FWD)$/;
 
 export function useSquadDnD() {
   const { dotIdByCell, setPositions } = useFormationGeometry();
-  const { assignments, setAssignments } = useAssignments();
-  // const { /* getBucket, playersById */ } = useSquad(); 
+  const { setAssignments } = useAssignments();
 
   const onDragCancelGlobal = () => {};
 
@@ -22,18 +20,22 @@ export function useSquadDnD() {
     const overId = String(over.id);
 
     const isPlayerDrag = activeId.startsWith("player:");
+    const isDotDrag = activeId.startsWith("dot:");
     const isBucket = BUCKET_RE.test(overId);
     const isAutoBucket = overId === "bucket:AUTO";
 
- // Player dragged
+    // -------------------------
+    // PLAYER DRAGGED
+    // -------------------------
     if (isPlayerDrag) {
       const playerId = Number(activeId.split(":")[1]);
 
-      // Drop onto a pitch cell ("row-col")
+      // Drop onto a pitch cell
       const cellMatch = overId.match(CELL_RE);
       if (cellMatch) {
-        const dotId = dotIdByCell[overId];
-        if (!dotId) return; // not an active dot in that cell
+        const cellKey = `${cellMatch[1]}-${cellMatch[2]}`; // "row-col"
+        const dotId = dotIdByCell[cellKey]; // e.g. "lb"
+        if (!dotId) return;
 
         setAssignments((prev) => {
           const next = { ...prev };
@@ -43,14 +45,14 @@ export function useSquadDnD() {
             if (pid === playerId) next[d] = null;
           }
 
-          // assign to the target dot (replaces any occupant)
+          // assign to the target dot
           next[dotId] = playerId;
           return next;
         });
         return;
       }
 
-      // Drop anywhere on the list (AUTO) or an explicit bucket → unassign
+      // Drop anywhere on the list (AUTO) or a bucket => unassign
       if (isAutoBucket || isBucket) {
         setAssignments((prev) => {
           const next = { ...prev };
@@ -62,15 +64,17 @@ export function useSquadDnD() {
         return;
       }
 
-      // Unknown target: ignore
       return;
     }
 
+    // -------------------------
+    // DOT DRAGGED
+    // -------------------------
+    if (!isDotDrag) return;
 
-    // DOT DRAGGED ON THE PITCH
-    const draggedDotId = activeId;
+    const draggedDotId = activeId.split(":")[1]; // ✅ "lb" etc.
 
-    // Dropped over list/bucket → unassign the player on that dot (dot stays put)
+    // Dropped over list/bucket → unassign player on that dot
     if (isAutoBucket || isBucket) {
       setAssignments((prev) => {
         if (prev[draggedDotId] == null) return prev;
@@ -79,7 +83,7 @@ export function useSquadDnD() {
       return;
     }
 
-    // Dropped on a pitch cell → move/swap dots
+    // Dropped on a pitch cell → move/swap dots (row/col only, NEVER id)
     const cellMatch = overId.match(CELL_RE);
     if (!cellMatch) return;
 
@@ -97,19 +101,17 @@ export function useSquadDnD() {
       const destIdx = next.findIndex((p) => p.row === destRow && p.col === destCol);
 
       if (destIdx === -1) {
-        // move into empty cell
-        next[fromIdx] = { ...next[fromIdx], row: destRow, col: destCol }; // prev formation array with 'from Id'
+        next[fromIdx] = { ...next[fromIdx], row: destRow, col: destCol };
       } else {
-        // swap with the dot currently in the destination cell
         const fromPos = next[fromIdx];
         const destPos = next[destIdx];
-        next[fromIdx] = { ...fromPos, row: destPos.row, col: destPos.col }; // prev formation array with 'from Id'
-        next[destIdx] = { ...destPos, row: fromRow, col: fromCol }; // prev formation array with 'destination Id'
+        next[fromIdx] = { ...fromPos, row: destPos.row, col: destPos.col };
+        next[destIdx] = { ...destPos, row: fromRow, col: fromCol };
       }
 
       return next;
     });
   };
 
-  return { onDragEndGlobal, onDragCancelGlobal, assignments };
+  return { onDragEndGlobal, onDragCancelGlobal };
 }
