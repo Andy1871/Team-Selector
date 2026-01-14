@@ -22,7 +22,7 @@ function DraggableDot({
 }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
-      id: `dot:${id}`, // ✅ prefix so it never collides with cell ids
+      id: `dot:${id}`, // ✅ prefix
       data: { row, col },
     });
 
@@ -67,12 +67,20 @@ function DroppableCell({
 }
 
 export default function Pitch({ activeId }: { activeId: string | null }) {
-  const { grid, positions } = useFormationGeometry();
+  const { grid, positions, selectedKey } = useFormationGeometry();
   const { assignments } = useAssignments();
   const { playersById } = useSquad();
 
   const dragging = Boolean(activeId);
 
+  const assignedCount = useMemo(() => {
+    return Object.values(assignments).filter((v) => v != null).length;
+  }, [assignments]);
+
+  const isFreeMode = selectedKey == null; // ✅ no preset formation selected
+  const freeModeFull = isFreeMode && assignedCount >= 11;
+
+  // For render only: Map cells -> dot info
   const byCell = useMemo(() => {
     const m = new Map<CellId, { id: string; row: number; col: number }>();
     for (const p of positions) m.set(cellId(p.row, p.col), { id: p.id, row: p.row, col: p.col });
@@ -109,8 +117,13 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
           const id = cellId(row, col);
           const dot = byCell.get(id);
 
+          // ✅ in free mode when full: hide any dot that doesn't have a player
+          const dotHasPlayer = dot ? assignments[dot.id] != null : false;
+          const shouldRenderDot = dot && (!freeModeFull || dotHasPlayer);
+
           return (
             <DroppableCell key={id} id={id}>
+              {/* ghost dots while dragging */}
               {dragging && (
                 <div
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
@@ -120,7 +133,7 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
                 </div>
               )}
 
-              {dot && (
+              {shouldRenderDot && dot && (
                 <>
                   <DraggableDot id={dot.id} row={row} col={col} className={xClasses(row, col)} />
 

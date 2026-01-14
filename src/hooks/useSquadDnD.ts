@@ -7,8 +7,8 @@ const CELL_RE = /^cell:(\d+)-(\d+)$/;
 const BUCKET_RE = /^bucket:(GK|DEF|MID|FWD)$/;
 
 export function useSquadDnD() {
-  const { dotIdByCell, setPositions } = useFormationGeometry();
-  const { setAssignments } = useAssignments();
+  const { dotIdByCell, setPositions, selectedKey } = useFormationGeometry();
+  const { assignments, setAssignments } = useAssignments();
 
   const onDragCancelGlobal = () => {};
 
@@ -24,6 +24,9 @@ export function useSquadDnD() {
     const isBucket = BUCKET_RE.test(overId);
     const isAutoBucket = overId === "bucket:AUTO";
 
+    const isFreeMode = selectedKey == null;
+    const assignedCount = Object.values(assignments).filter((v) => v != null).length;
+
     // -------------------------
     // PLAYER DRAGGED
     // -------------------------
@@ -33,8 +36,8 @@ export function useSquadDnD() {
       // Drop onto a pitch cell
       const cellMatch = overId.match(CELL_RE);
       if (cellMatch) {
-        const cellKey = `${cellMatch[1]}-${cellMatch[2]}`; // "row-col"
-        const dotId = dotIdByCell[cellKey]; // e.g. "lb"
+        const cellKey = `${cellMatch[1]}-${cellMatch[2]}`;
+        const dotId = dotIdByCell[cellKey];
         if (!dotId) return;
 
         setAssignments((prev) => {
@@ -45,10 +48,17 @@ export function useSquadDnD() {
             if (pid === playerId) next[d] = null;
           }
 
-          // assign to the target dot
+          const targetCurrentlyEmpty = next[dotId] == null;
+
+          // ✅ FREE MODE LIMIT: if we already have 11 assigned, don't allow filling a new empty dot
+          if (isFreeMode && assignedCount >= 11 && targetCurrentlyEmpty) {
+            return prev; // ignore drop
+          }
+
           next[dotId] = playerId;
           return next;
         });
+
         return;
       }
 
@@ -72,7 +82,7 @@ export function useSquadDnD() {
     // -------------------------
     if (!isDotDrag) return;
 
-    const draggedDotId = activeId.split(":")[1]; // ✅ "lb" etc.
+    const draggedDotId = activeId.split(":")[1];
 
     // Dropped over list/bucket → unassign player on that dot
     if (isAutoBucket || isBucket) {
@@ -83,7 +93,7 @@ export function useSquadDnD() {
       return;
     }
 
-    // Dropped on a pitch cell → move/swap dots (row/col only, NEVER id)
+    // Dropped on a pitch cell → move/swap dots
     const cellMatch = overId.match(CELL_RE);
     if (!cellMatch) return;
 
