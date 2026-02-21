@@ -18,7 +18,7 @@ An interactive **tactical lineup builder** built with Next.js 15, TypeScript, an
 | Feature | Detail |
 |---------|--------|
 | **Live squad data** | Fetches real player rosters from the API Sports Football API for all 44 Premier League & Championship clubs |
-| **12 tactical formations** | 3-back, 4-back, and 5-back systems — 4-3-3, 4-2-3-1, 3-5-2, and more |
+| **12 tactical formations** | 3 at the back, 4 at the back, 5 at the back formations |
 | **Drag-and-drop** | Players from squad list to pitch, between dots to swap, or back to list to remove |
 | **Formation switching** | Intelligently remaps player assignments when switching formations, preserving continuity |
 | **Free positioning** | Dots can be dragged to any grid cell to sculpt custom tactical shapes |
