@@ -43,8 +43,8 @@ function DraggableDot({
     >
       <div
         className={[
-          "w-7 h-7 rounded-full border-2 border-green-700 bg-gray-300 shadow",
-          isDragging ? "opacity-70 scale-105" : "",
+          "w-7 h-7 rounded-full border-2 border-green-800 bg-white shadow-md transition-transform",
+          isDragging ? "opacity-60 scale-110" : "",
         ].join(" ")}
       />
     </div>
@@ -120,7 +120,26 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
   };
 
   return (
-    <div className="relative w-full max-w-4xl aspect-2/3 rounded-2xl border-4 border-green-700 overflow-hidden bg-green-600">
+    <div className="relative w-full max-w-4xl aspect-2/3 rounded-2xl border-4 border-green-800 overflow-hidden bg-green-600 shadow-xl">
+
+      {/* Pitch markings — purely decorative */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Center line */}
+        <div className="absolute top-1/2 left-0 right-0 h-px bg-white/20" />
+        {/* Center circle */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[22%] aspect-square rounded-full border border-white/20" />
+        {/* Center spot */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/30" />
+        {/* Top penalty area */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[55%] h-[17%] border-b border-l border-r border-white/20" />
+        {/* Bottom penalty area */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[55%] h-[17%] border-t border-l border-r border-white/20" />
+        {/* Top 6-yard box */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[28%] h-[7%] border-b border-l border-r border-white/15" />
+        {/* Bottom 6-yard box */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[28%] h-[7%] border-t border-l border-r border-white/15" />
+      </div>
+
       <div className="absolute inset-0 grid grid-cols-5 grid-rows-6">
         {Array.from({ length: grid.rows * grid.cols }).map((_, i) => {
           const row = Math.floor(i / grid.cols) + 1;
@@ -136,7 +155,7 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                   aria-hidden
                 >
-                  <div className="w-7 h-7 rounded-full border-2 border-green-700/40 bg-gray-300/30" />
+                  <div className="w-7 h-7 rounded-full border border-white/30 bg-white/10" />
                 </div>
               )}
 
@@ -156,7 +175,7 @@ export default function Pitch({ activeId }: { activeId: string | null }) {
                         xClasses(row, col),
                       ].join(" ")}
                     >
-                      <span className="px-1.5 py-0.5 rounded bg-white/80">
+                      <span className="px-1.5 py-0.5 rounded-md bg-white/90 shadow-sm text-gray-900 font-semibold whitespace-nowrap">
                         {playersById[assignments[dot.id] as number]?.name ??
                           assignments[dot.id]}
                       </span>

@@ -33,16 +33,23 @@ function PlayerRow({ p }: { p: Player }) {
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      className="flex items-center justify-between cursor-grab active:cursor-grabbing"
+      className="flex items-center justify-between py-1.5 px-2 -mx-2 rounded-lg cursor-grab active:cursor-grabbing hover:bg-green-50 transition-colors"
       style={style}
       data-player-id={p.id}
       data-player-pos={p.position ?? ""}
     >
-      <span>{p.name}</span>
-      <span className="text-xs text-muted-foreground">{p.number ?? "—"}</span>
+      <span className="text-sm text-gray-800 truncate">{p.name}</span>
+      <span className="text-xs font-mono bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded ml-2 shrink-0">{p.number ?? "—"}</span>
     </li>
   );
 }
+
+const BUCKET_BADGE: Record<string, string> = {
+  GK:  "bg-yellow-100 text-yellow-800",
+  DEF: "bg-blue-100  text-blue-800",
+  MID: "bg-green-100 text-green-800",
+  FWD: "bg-red-100   text-red-800",
+};
 
 // Droppable bucket
 function BucketSection({
@@ -59,10 +66,15 @@ function BucketSection({
   const { setNodeRef } = useDroppable({ id: `bucket:${code}` });
   return (
     <section ref={setNodeRef} className="mt-4 first:mt-0">
-      <h3 className="font-semibold text-green-700">
-        {title}{" "}
-        <span className="text-sm text-muted-foreground">({count})</span>
-      </h3>
+      <div className="flex items-center gap-2 mb-1">
+        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${BUCKET_BADGE[code]}`}>
+          {code}
+        </span>
+        <h3 className="font-semibold text-sm text-gray-700">
+          {title}
+        </h3>
+        <span className="text-xs text-muted-foreground ml-auto">({count})</span>
+      </div>
       {children}
     </section>
   );
@@ -116,22 +128,22 @@ export default function PlayerList() {
 
   if (!selectedTeamId) {
     return (
-      <div className="border rounded-xl p-4 shadow-sm">
-        <h5>Select a team from the dropdown above</h5>
+      <div className="border border-dashed border-gray-200 rounded-xl p-4 shadow-sm text-center">
+        <p className="text-sm text-gray-400">Select a team above to load the squad</p>
       </div>
     );
   }
   if (loading) {
     return (
-      <div className="border rounded-xl p-4 shadow-sm">
-        <h5>Loading {selectedTeamName ?? "team"} squad…</h5>
+      <div className="border rounded-xl p-4 shadow-sm text-center">
+        <p className="text-sm text-gray-500 animate-pulse">Loading {selectedTeamName ?? "team"} squad…</p>
       </div>
     );
   }
   if (err) {
     return (
-      <div className="border rounded-xl p-4 shadow-sm text-red-600">
-        <h5>{err}</h5>
+      <div className="border border-red-200 rounded-xl p-4 shadow-sm text-center">
+        <p className="text-sm text-red-500">{err}</p>
       </div>
     );
   }
@@ -163,7 +175,7 @@ export default function PlayerList() {
   };
 
   return (
-    <div ref={setAutoRef} className="border rounded-xl p-4 shadow-sm">
+    <div ref={setAutoRef} className="border border-gray-100 rounded-xl p-4 shadow-sm bg-white">
       <BucketSection title="Goalkeepers" code="GK" count={filtered.GK.length}>
         {filtered.GK.length === 0 ? (
           <p className="text-sm text-muted-foreground mt-2">None</p>

@@ -17,10 +17,11 @@ export default function Navbar() {
   // };
 
   return (
-    <nav className="border-b bg-white/80 backdrop-blur sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
-        <Link href="/" className="font-semibold text-lg">
-          Squad Selector
+    <nav className="border-b border-green-100 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 h-14">
+        <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-tight text-gray-900 hover:text-green-700 transition-colors">
+          <span className="text-xl leading-none">⚽</span>
+          <span>Squad Selector</span>
         </Link>
         {/* <div className="flex items-center gap-4">
           {user ? (

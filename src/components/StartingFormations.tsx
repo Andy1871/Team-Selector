@@ -71,27 +71,27 @@ export default function StartingFormations() {
   };
 
   return (
-    <div className="border rounded-xl p-5 flex-1 shadow-sm">
-      <h3 className="font-semibold mb-1">Starting Formations</h3>
-      <p className="text-sm text-gray-500 mb-4">
-        These can be manually changed using drag and drop.
+    <div className="border border-gray-100 rounded-xl p-4 sm:p-5 flex-1 shadow-sm bg-white">
+      <h3 className="font-semibold text-gray-900 mb-0.5">Formations</h3>
+      <p className="text-xs text-gray-400 mb-4 leading-relaxed">
+        Choose a preset — then drag dots to customise.
       </p>
 
       {startingFormations.map((group, i) => (
-        <div key={i} className="mb-6">
-          <h4 className="font-bold text-green-700 mb-2">{group.title}</h4>
-          <div className="flex flex-col gap-2">
+        <div key={i} className="mb-5">
+          <h4 className="text-xs font-bold text-green-700 uppercase tracking-wider mb-2">{group.title}</h4>
+          <div className="flex flex-col gap-1.5">
             {group.formations.map((f: string, j: number) => {
               const isActive = f === selectedKey;
               return (
                 <button
                   key={j}
                   onClick={() => pickFormation(f as FormationKey)}
-                  className={`py-1.5 rounded-md border text-sm font-medium transition-colors
+                  className={`py-2 rounded-lg border text-sm font-medium transition-all
                     ${
                       isActive
-                        ? "border-green-700 bg-yellow-200"
-                        : "border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400"
+                        ? "border-green-600 bg-green-50 text-green-800 shadow-sm"
+                        : "border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-gray-700"
                     }`}
                 >
                   {f}

@@ -37,7 +37,7 @@ function SquadCanvas() {
         - Small screens: Pitch full width, then formations + squad side-by-side
         - Large screens: 4 columns (pitch spans 2), formations col 3, squad col 4
       */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 p-4 sm:p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Pitch */}
         <div className="flex flex-col items-center lg:col-span-2">
           <Pitch activeId={activeId} />
@@ -69,8 +69,8 @@ function SquadCanvas() {
 
       <DragOverlay>
         {activeId ? (
-          // ✅ bigger overlay dot to match pitch dot size
-          <div className="w-7 h-7 rounded-full border-2 border-green-700 bg-gray-300 shadow" />
+          // overlay dot matches pitch dot
+          <div className="w-7 h-7 rounded-full border-2 border-green-800 bg-white shadow-lg ring-2 ring-green-300/40" />
         ) : null}
       </DragOverlay>
     </DndContext>
@@ -97,14 +97,14 @@ export default function Home() {
     <SquadProvider>
       <FormationGeometryProvider>
         <AssignmentProvider>
-          <div className="mb-2">
-            <h1 className="font-semibold text-xl mb-2">Welcome to the Squad Selector</h1>
-            <p>
-              Choose your team, pick a base formation and get creative. Drag positions around to
-              create new formations and drag and drop players into position…
-              <br />
-              <br />
-              To remove a player from the lineup, drag them back into the squad on the right hand side.
+          <div className="mb-4 pt-2">
+            <h1 className="font-bold text-2xl tracking-tight text-gray-900 mb-1.5">
+              Build Your Lineup
+            </h1>
+            <p className="text-sm text-gray-500 max-w-2xl leading-relaxed">
+              Pick a Premier League or Championship team, choose a formation, then drag players onto the pitch.
+              Reposition formation dots freely to create custom shapes.{" "}
+              <span className="text-gray-400">Drag a player back to the squad panel to remove them.</span>
             </p>
           </div>
           <SquadCanvas />
