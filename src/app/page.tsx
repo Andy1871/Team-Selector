@@ -5,7 +5,9 @@ import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@
 // import { auth } from "./firebase";
 
 import { FormationGeometryProvider } from "@/providers/FormationGeometryProvider";
+import { useFormationGeometry } from "@/providers/FormationGeometryProvider";
 import { AssignmentProvider } from "@/providers/AssignmentProvider";
+import { useAssignments } from "@/providers/AssignmentProvider";
 import { useSquadDnD } from "@/hooks/useSquadDnD";
 import { SquadProvider } from "@/providers/SquadProvider";
 
@@ -13,6 +15,25 @@ import Pitch from "@/components/Pitch";
 import PlayerList from "@/components/PlayerList";
 import StartingFormations from "@/components/StartingFormations";
 import SelectTeam from "@/components/SelectTeam";
+
+function ClearLineupButton() {
+  const { setAssignments } = useAssignments();
+  const { setFormation } = useFormationGeometry();
+
+  const handleClear = () => {
+    setAssignments({});
+    setFormation(null);
+  };
+
+  return (
+    <button
+      onClick={handleClear}
+      className="mt-3 w-full py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all shadow-sm"
+    >
+      Clear Lineup
+    </button>
+  );
+}
 
 function SquadCanvas() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
@@ -32,30 +53,22 @@ function SquadCanvas() {
         onDragCancelGlobal();
       }}
     >
-      {/* 
-        Layout goals:
-        - Small screens: Pitch full width, then formations + squad side-by-side
-        - Large screens: 4 columns (pitch spans 2), formations col 3, squad col 4
+      {/*
+        Layout:
+        - Mobile:  1 col → pitch full width, then [formations | squad] side-by-side below
+        - Tablet (md): 2 cols → pitch left, [formations | squad] right (50/50)
+        - Desktop (lg): 4 cols → pitch spans 2, formations col 3, squad col 4
       */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4">
-        {/* Pitch */}
-        <div className="flex flex-col items-center lg:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+
+        {/* Pitch column */}
+        <div className="flex flex-col md:col-span-1 lg:col-span-2">
           <Pitch activeId={activeId} />
-          {/* <div className="gap-4 grid grid-cols-3">
-            <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
-              Share
-            </button>
-            <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
-              Save Lineup
-            </button>
-            <button className="mt-6 bg-yellow-500 px-4 py-2 rounded-md font-semibold hover:bg-yellow-600">
-              Load Lineup
-            </button>
-          </div> */}
+          <ClearLineupButton />
         </div>
 
-        {/* Right side: on small/medium screens keep these two NEXT TO EACH OTHER */}
-        <div className="grid grid-cols-2 gap-4 lg:col-span-2 lg:grid-cols-2">
+        {/* Controls: formations + squad — side-by-side at all breakpoints */}
+        <div className="grid grid-cols-2 gap-3 md:col-span-1 lg:col-span-2 lg:grid-cols-2">
           <div className="flex flex-col">
             <StartingFormations />
           </div>
@@ -69,7 +82,6 @@ function SquadCanvas() {
 
       <DragOverlay>
         {activeId ? (
-          // overlay dot matches pitch dot
           <div className="w-7 h-7 rounded-full border-2 border-green-800 bg-white shadow-lg ring-2 ring-green-300/40" />
         ) : null}
       </DragOverlay>

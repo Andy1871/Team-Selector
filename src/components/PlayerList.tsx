@@ -82,7 +82,7 @@ function BucketSection({
 
 export default function PlayerList() {
   const { selectedTeamId, selectedTeamName, setPlayersById, getBucket } = useSquad();
-  const { assignments } = useAssignments();
+  const { assignments, setAssignments } = useAssignments();
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -93,6 +93,7 @@ export default function PlayerList() {
     if (!selectedTeamId) return;
     let cancelled = false;
 
+    setAssignments({});
     setLoading(true);
     setErr(null);
 
@@ -124,7 +125,7 @@ export default function PlayerList() {
     return () => {
       cancelled = true;
     };
-  }, [selectedTeamId, setPlayersById]);
+  }, [selectedTeamId, setPlayersById, setAssignments]);
 
   if (!selectedTeamId) {
     return (
@@ -175,7 +176,7 @@ export default function PlayerList() {
   };
 
   return (
-    <div ref={setAutoRef} className="border border-gray-100 rounded-xl p-4 shadow-sm bg-white">
+    <div ref={setAutoRef} className="border border-gray-100 rounded-xl p-4 shadow-sm bg-white overflow-y-auto max-h-[52vh] md:max-h-[60vh]">
       <BucketSection title="Goalkeepers" code="GK" count={filtered.GK.length}>
         {filtered.GK.length === 0 ? (
           <p className="text-sm text-muted-foreground mt-2">None</p>
