@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 type SquadLike = { response: Array<{ players: any[] }> };
 
 async function fetchJson(url: string, headers: Record<string, string>) {
-  const res = await fetch(url, { headers, cache: "no-store" });
+  const res = await fetch(url, { headers, next: { revalidate: 86400 } });
   const data = await res.json();
   return { res, data };
 }
