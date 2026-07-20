@@ -1,6 +1,6 @@
 // app/api/squad/[teamId]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-export const dynamic = "force-dynamic";
+
 
 type SquadLike = { response: Array<{ players: any[] }> };
 
